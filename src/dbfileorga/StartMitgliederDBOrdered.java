@@ -4,10 +4,7 @@ public class StartMitgliederDBOrdered {
 
 	public static void main(String[] args) {
 			MitgliederDB db = new MitgliederDB(true);
-			
 			System.out.println(db);
-			
-			// TODO test your implementation with the following use cases  
 			
 			// read the a record number e.g. 32 (119;2;44;Albers;Hans;07.10.75;01.05.89;90;25)
 			Record rec = db.read(32);

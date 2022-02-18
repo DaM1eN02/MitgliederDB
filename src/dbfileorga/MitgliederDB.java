@@ -101,8 +101,17 @@ public class MitgliederDB implements Iterable<Record>
 	 * @param recNum the term to search for
 	 * @return the record matching the search term
 	 */
-	public Record read(int recNum){
-		//TODO implement
+	public Record read(int recNum) {
+		int count = 0;
+		for (DBBlock dbblock : db) {
+			for (Record record : dbblock) {
+				++count;
+				if (count == recNum) {
+					return record;
+				}
+			}
+		}
+
 		return null;
 	}
 	
@@ -112,7 +121,15 @@ public class MitgliederDB implements Iterable<Record>
 	 * @return the number of the record in the DB -1 if not found
 	 */
 	public int findPos(String searchTerm){
-		//TODO implement
+		int count = 0;
+		for (DBBlock dbBlock : db) {
+			for (Record record : dbBlock) {
+				++count;
+				if (record.toString().startsWith(searchTerm)) {
+					return count;
+				}
+			}
+		}
 		return -1;
 	}
 	
@@ -122,7 +139,10 @@ public class MitgliederDB implements Iterable<Record>
 	 * @return the record number of the inserted record
 	 */
 	public int insert(Record record){
-		//TODO implement
+		if (record != null) {
+			this.appendRecord(record);
+			return findPos(record.toString());
+		}
 		return -1;
 	}
 	
@@ -130,18 +150,37 @@ public class MitgliederDB implements Iterable<Record>
 	 * Deletes the record specified 
 	 * @param numRecord number of the record to be deleted
 	 */
-	public void delete(int numRecord){
-		//TODO implement
+	public void delete(int numRecord) {
+		DBBlock insert = new DBBlock();
+		DBBlock deletedBlock = db[getBlockNumOfRecord(numRecord)];
+
+		for (Record record : deletedBlock) {
+			if (!record.toString().equals(read(numRecord).toString())) {
+				insert.insertRecordAtTheEnd(record);
+			}
+		}
+		db[getBlockNumOfRecord(numRecord)] = insert;
 	}
 	
 	/**
 	 * Replaces the record at the specified position with the given one.
 	 * @param numRecord the position of the old record in the db
-	 * @param record the new record
+	 * @param modifiedRecord the new record
 	 * 
 	 */
-	public void modify(int numRecord, Record record){
-		//TODO
+	public void modify(int numRecord, Record modifiedRecord){
+		DBBlock modify = new DBBlock();
+		DBBlock modifiedBlock = db[getBlockNumOfRecord(numRecord)];
+
+		for (Record record : modifiedBlock) {
+			if (!record.toString().equals(read(numRecord).toString())) {
+				modify.insertRecordAtTheEnd(record);
+			} else {
+				modify.insertRecordAtTheEnd(modifiedRecord);
+			}
+		}
+
+		db[getBlockNumOfRecord(numRecord)] = modify;
 	}
 
 	
