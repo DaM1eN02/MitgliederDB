@@ -103,10 +103,10 @@ public class MitgliederDB implements Iterable<Record>
 	 */
 	public Record read(int recNum) {
 		int count = 0;
-		for (DBBlock dbblock : db) {
-			for (Record record : dbblock) {
+		for (DBBlock dbblock : db) { // Iteration über alle Datenbank Blöcke
+			for (Record record : dbblock) { // Iteration über alle Records in jedem Block
 				++count;
-				if (count == recNum) {
+				if (count == recNum) { // Suchen von dem Record mit der Nummer recNum
 					return record;
 				}
 			}
@@ -122,10 +122,10 @@ public class MitgliederDB implements Iterable<Record>
 	 */
 	public int findPos(String searchTerm){
 		int count = 0;
-		for (DBBlock dbBlock : db) {
-			for (Record record : dbBlock) {
+		for (DBBlock dbBlock : db) { // Iteration über alle Datenbank Blöcke
+			for (Record record : dbBlock) { // Iteration über alle Records in jedem Block
 				++count;
-				if (record.toString().startsWith(searchTerm)) {
+				if (record.toString().startsWith(searchTerm)) { // Suchen nach dem String
 					return count;
 				}
 			}
@@ -135,12 +135,12 @@ public class MitgliederDB implements Iterable<Record>
 	
 	/**
 	 * Inserts the record into the file and returns the record number
-	 * @param record
+	 * @param record to be inserted Record
 	 * @return the record number of the inserted record
 	 */
 	public int insert(Record record){
-		if (record != null) {
-			this.appendRecord(record);
+		if (record != null) { // Überprüfen ob das Insert nicht NULL ist
+			this.appendRecord(record); // Nutzen der Funktion appendRecord
 			return findPos(record.toString());
 		}
 		return -1;
@@ -151,15 +151,15 @@ public class MitgliederDB implements Iterable<Record>
 	 * @param numRecord number of the record to be deleted
 	 */
 	public void delete(int numRecord) {
-		DBBlock insert = new DBBlock();
-		DBBlock deletedBlock = db[getBlockNumOfRecord(numRecord)];
+		DBBlock insert = new DBBlock(); // Erstellen eines neuen Blockes
+		DBBlock deletedBlock = db[getBlockNumOfRecord(numRecord)]; // Block in dem der Record gelöscht werden muss
 
 		for (Record record : deletedBlock) {
 			if (!record.toString().equals(read(numRecord).toString())) {
-				insert.insertRecordAtTheEnd(record);
+				insert.insertRecordAtTheEnd(record); // Neuen Block mit den alten Sachen füllen und das eine Record löschen
 			}
 		}
-		db[getBlockNumOfRecord(numRecord)] = insert;
+		db[getBlockNumOfRecord(numRecord)] = insert; // Den alten Block durch den neuen ersetzen
 	}
 	
 	/**
@@ -169,18 +169,17 @@ public class MitgliederDB implements Iterable<Record>
 	 * 
 	 */
 	public void modify(int numRecord, Record modifiedRecord){
-		DBBlock modify = new DBBlock();
-		DBBlock modifiedBlock = db[getBlockNumOfRecord(numRecord)];
+		DBBlock modify = new DBBlock(); // Erstellen eines neues Blockes
+		DBBlock modifiedBlock = db[getBlockNumOfRecord(numRecord)]; // Block in dem der Record verändert werden soll
 
 		for (Record record : modifiedBlock) {
 			if (!record.toString().equals(read(numRecord).toString())) {
-				modify.insertRecordAtTheEnd(record);
+				modify.insertRecordAtTheEnd(record); // Alte Sachen in neuen Block einfügen
 			} else {
-				modify.insertRecordAtTheEnd(modifiedRecord);
+				modify.insertRecordAtTheEnd(modifiedRecord); // Modifizierten Record in den Block einfügen
 			}
 		}
-
-		db[getBlockNumOfRecord(numRecord)] = modify;
+		db[getBlockNumOfRecord(numRecord)] = modify; // Den alten Block durch den neuen ersetzen
 	}
 
 	
